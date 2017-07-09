@@ -79,6 +79,7 @@ cells.forEach((cell, index) => {
 })
 
 restartButton.addEventListener("click", event => {
+  terminal.innerHTML = null
   cells.forEach(cell => {
     cell.innerHTML = null
   })
