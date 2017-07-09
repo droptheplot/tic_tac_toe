@@ -70,27 +70,24 @@ defmodule TicTacToe.Board do
       over?(board) ->
         0
       true ->
-        max = @infinity
+        weight = @infinity
         index = 0
 
-        {max, index} =
-          Enum.map(@size, fn(i) ->
-            case Enum.at(board, i) do
-              nil ->
-                weight = -next_move(List.replace_at(board, i, p), Player.next(p), depth + 1)
-                {weight, i}
-              _ ->
-                nil
-            end
+        {weight, index} =
+          @size
+          |> Enum.filter(fn(index) -> empty?(board, index) end)
+          |> Enum.map(fn(index) ->
+            weight = -next_move(List.replace_at(board, index, p),
+                                Player.next(p), depth + 1)
+            {weight, index}
           end)
-          |> Enum.reject(&is_nil/1)
           |> Enum.reduce({@infinity, nil}, fn(e, acc) ->
             if elem(e, 0) >= elem(acc, 0), do: e, else: acc
           end)
 
         case depth do
           0 -> index
-          _ -> max
+          _ -> weight
         end
     end
   end
