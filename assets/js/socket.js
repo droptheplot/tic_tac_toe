@@ -54,7 +54,46 @@ let socket = new Socket("/socket", {params: {}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("room:game", {})
+
+let player = "x"
+let roomId = Math.random().toString(36).substring(7)
+let cells = document.querySelectorAll('.cell')
+let channel = socket.channel("game:" + roomId, {})
+let restartButton = document.getElementById("restart")
+let terminal = document.getElementById("terminal")
+
+function serializeBoard(cells) {
+  let board = []
+
+  cells.forEach(cell => {
+    board.push(cell.innerHTML.trim())
+  })
+
+  return board
+}
+
+cells.forEach((cell, index) => {
+  cell.addEventListener("click", event => {
+    channel.push("move", {board: serializeBoard(cells), player: player, index: index})
+  })
+})
+
+restartButton.addEventListener("click", event => {
+  cells.forEach(cell => {
+    cell.innerHTML = null
+  })
+})
+
+channel.on("move", payload => {
+  cells.forEach((cell, index) => {
+    cell.innerHTML = payload.board[index]
+  })
+})
+
+channel.on("over", payload => {
+  terminal.innerHTML = payload.winner + " wins"
+})
+
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })

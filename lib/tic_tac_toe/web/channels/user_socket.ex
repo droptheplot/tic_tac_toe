@@ -2,7 +2,7 @@ defmodule TicTacToe.Web.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", TicTacToe.Web.RoomChannel
+  channel "game:*", TicTacToe.Web.GameChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
