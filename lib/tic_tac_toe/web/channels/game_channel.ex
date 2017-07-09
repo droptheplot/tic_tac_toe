@@ -9,12 +9,10 @@ defmodule TicTacToe.Web.GameChannel do
   end
 
   def handle_in("move", %{"board" => board, "index" => index, "player" => player}, socket) do
-    broadcast!(socket, "move", %{board: board, player: player})
-
     player = String.to_atom(player)
     board = serialize_board(board)
 
-    if Board.empty?(board, index) do
+    if Board.empty?(board, index) && !Board.winner?(board) do
       next_player = Player.next(player)
 
       board =

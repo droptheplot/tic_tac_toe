@@ -18,6 +18,10 @@ defmodule TicTacToe.Board do
     winner(board) == p
   end
 
+  def winner?(board) do
+    !is_nil(winner(board))
+  end
+
   def new do
     Enum.map(@size, fn(_) -> nil end)
   end
